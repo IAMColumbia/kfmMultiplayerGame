@@ -69,6 +69,10 @@ providers = {
 objectSelectors = {
 }
 recentSearches = [
+	"h: is=child ceiling"
+	"h: is=child floor"
+	"h:ceili"
+	"h:ceiling/floor"
 ]
 searchItemFavorites = [
 ]
@@ -79,7 +83,7 @@ indexOnEditorStartup = true
 logIndexingPerformanceReport = false
 expandedQueries = [
 ]
-queryBuilder = true
+queryBuilder = false
 ignoredProperties = "id;name;classname;imagecontentshash"
 helperWidgetCurrentArea = "all"
 disabledIndexers = ""
