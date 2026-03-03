@@ -11,3 +11,5 @@ As I created the world space, I kept thinking about GoldenEye, which is the one 
 <br><br>
 Ultimately, I landed on a game that's a cross between GoldenEye and Dead by Daylight, where one player is a survivor & the other player is a zombie. (I felt like zombies = a play on "dead" malls.)
 Since the environment has a lot of repeating elements, it won't immediately give away where the other player is, even if you can see their screen.
+## 03/03/2026
+I added the camera scripting and player prefabs for the human and the zombie. I've decided to balance it by making the zombie more tanky and the human more squishy.
