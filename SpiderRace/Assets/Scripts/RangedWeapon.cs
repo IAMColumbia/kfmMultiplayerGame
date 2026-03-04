@@ -19,6 +19,8 @@ public class RangedWeapon : MonoBehaviour
     // Hook this to PlayerInput -> Events -> Attack
     public void OnAttack(InputAction.CallbackContext ctx)
     {
+        Debug.Log($"Ranged OnAttack fired: performed={ctx.performed} by {gameObject.name}");
+
         if (!ctx.performed) return;
 
         if (Time.time < lastFireTime + fireCooldown) return;
@@ -34,20 +36,28 @@ public class RangedWeapon : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, range, hitMask, QueryTriggerInteraction.Ignore))
         {
-            // Don't hit yourself
-            if (hit.transform.root == transform.root) return;
+        Debug.Log($"Ranged hit: {hit.collider.name} | root: {hit.transform.root.name}");
 
-            if (hit.collider.TryGetComponent<Health>(out Health targetHealth))
-            {
-                targetHealth.TakeDamage(damage);
-            }
+        var myPlayer = GetComponentInParent<PlayerInput>();
+        var hitPlayer = hit.collider.GetComponentInParent<PlayerInput>();
 
-            // Debug visual
-            Debug.DrawLine(ray.origin, hit.point, Color.red, 0.5f);
+        if (hitPlayer != null && myPlayer != null && hitPlayer == myPlayer)
+        {
+            Debug.Log("Blocked: hit self player");
+            return;
+        }
+
+        Health targetHealth = hit.collider.GetComponentInParent<Health>();
+        if (targetHealth != null)
+        {
+            targetHealth.TakeDamage(damage);
         }
         else
         {
-            Debug.DrawLine(ray.origin, ray.origin + ray.direction * range, Color.green, 0.5f);
+            Debug.LogWarning($"No Health found up parent chain from {hit.collider.name}");
+        }
+
+            Debug.DrawLine(ray.origin, hit.point, Color.red, 0.5f);
         }
     }
 }

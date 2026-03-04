@@ -13,9 +13,15 @@ public class Health : MonoBehaviour
 
     private bool isDead = false;
 
+        private void OnEnable()
+    {
+        // When spawned/enabled, start alive
+        isDead = false;
+        currentHealth = maxHealth;
+    }
+
     void Start()
     {
-        currentHealth = maxHealth;
         spawnPoint = transform.position;
     }
 
@@ -34,15 +40,17 @@ public class Health : MonoBehaviour
         }
     }
 
-    void Die()
+    private void Die()
     {
         if (isDead) return;
 
         isDead = true;
+
         Debug.Log($"{gameObject.name} died.");
 
         if (canRespawn)
         {
+            gameObject.SetActive(false);
             Invoke(nameof(Respawn), respawnDelay);
         }
         else
@@ -51,10 +59,10 @@ public class Health : MonoBehaviour
         }
     }
 
-    void Respawn()
+    private void Respawn()
     {
-        currentHealth = maxHealth;
         transform.position = spawnPoint;
+        currentHealth = maxHealth;
         isDead = false;
 
         gameObject.SetActive(true);
