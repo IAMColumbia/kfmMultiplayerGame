@@ -56,6 +56,13 @@ public class SpawnDirector : MonoBehaviour
         if (spawn != null)
         {
             playerInput.transform.SetPositionAndRotation(spawn.position, spawn.rotation);
+
+            // Tell the Health script where this player's respawn point should be
+            var health = playerInput.GetComponent<Health>();
+            if (health != null)
+            {
+                health.SetSpawnPoint(spawn.position);
+            }
         }
         else
         {
