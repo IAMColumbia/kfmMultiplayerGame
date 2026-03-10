@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2462731246945107538}
   - component: {fileID: 2314256989503382211}
   - component: {fileID: 4304316192973971854}
-  - component: {fileID: 4356097444038738476}
   m_Layer: 0
   m_Name: PlayerBase
   m_TagString: Untagged
@@ -29,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 922453904794528035}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.51, y: 13.64717, z: -102.7}
+  m_LocalPosition: {x: -4.51, y: 13.64717, z: -102.623}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -157,22 +156,6 @@ MonoBehaviour:
     m_Bits: 4294967295
   mouseSensitivity: 0.1
   maxLookAngle: 80
---- !u!114 &4356097444038738476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 922453904794528035}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa8d5c04993c98449b80ab7148b9e926, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 100
-  currentHealth: 0
-  canRespawn: 1
-  respawnDelay: 3
 --- !u!1 &1287066006805150190
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,7 +222,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 600
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -449,7 +432,7 @@ Transform:
   m_GameObject: {fileID: 8961580204005445253}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.06, y: 1.44, z: -1.26}
+  m_LocalPosition: {x: 0.001, y: 1.231, z: -1.244}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
