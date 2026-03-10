@@ -27,6 +27,7 @@ Players can turn the tide in their favor by finding various pickups. Pickup effe
 - teleport
 - speed increase (temporary)
 <br><br>
+
 Like I mentioned above, the first-person POV + shared screen creates a dilemma that doesn't exist in typical social deduction games like Among Us. Players can look at each other's screens & reasonably guess where the other player is located. However, the repeated elements in the environment add a challenge, & even if a player figures out where another player is, item pickups give competitors a chance to evade each other.
 <br><br>
 Another strategy is to use the environment. Players can try to blend in (e.g., a player who appears as a plant could hide in one of the many planters around the map; a player who appears as a soda cup could hide in the food court, etc.) or run away & use their knowledge of the map to lose a competitor who's chasing them.
