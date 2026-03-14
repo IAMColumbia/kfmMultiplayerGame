@@ -42,4 +42,9 @@ public class PropDisguise : MonoBehaviour
 
         tagTarget.Initialize(identity);
     }
+
+        public GameObject GetCurrentPropInstance()
+    {
+        return currentPropInstance;
+    }
 }

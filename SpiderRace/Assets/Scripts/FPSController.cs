@@ -25,8 +25,9 @@ public class FPSController : MonoBehaviour
     [Tooltip("What layers count as ground for hovering.")]
     public LayerMask groundMask = ~0;
 
-    [Header("Mouse Look")]
-    public float mouseSensitivity = 2f;
+    [Header("Look")]
+    public float mouseSensitivity = 0.15f;
+    public float gamepadLookSpeed = 180f;
     public float maxLookAngle = 80f;
 
     private Vector2 moveInput;
@@ -34,7 +35,7 @@ public class FPSController : MonoBehaviour
 
     private float yVelocity;
     private float xRotation = 0f;
-    
+
     private PlayerInput playerInput;
 
     void Awake()
@@ -72,12 +73,10 @@ public class FPSController : MonoBehaviour
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
         Vector3 horizontal = moveSpeed * move;
 
-        // Gravity / vertical velocity
         bool grounded = controller.isGrounded;
 
         if (grounded && yVelocity < 0f)
         {
-            // Don't "stick" downward hard. Let hover logic manage the gap.
             yVelocity = 0f;
         }
 
@@ -91,7 +90,6 @@ public class FPSController : MonoBehaviour
 
     void ApplyHover()
     {
-        // Raycast from slightly above the player's feet to find ground distance.
         Vector3 origin = transform.position + Vector3.up * 0.1f;
 
         if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask, QueryTriggerInteraction.Ignore))
@@ -99,14 +97,12 @@ public class FPSController : MonoBehaviour
             float currentY = transform.position.y;
             float desiredY = hit.point.y + hoverHeight;
 
-            // Only correct upward (prevents pushing the capsule into the floor)
             float deltaY = desiredY - currentY;
             if (deltaY > 0.001f)
             {
                 float step = deltaY * hoverSnapSpeed * Time.deltaTime;
                 controller.Move(Vector3.up * step);
 
-                // If we were falling but we're close to the ground, kill downward velocity
                 if (yVelocity < 0f && deltaY < 0.25f)
                 {
                     yVelocity = 0f;
@@ -117,14 +113,27 @@ public class FPSController : MonoBehaviour
 
     void HandleLook()
     {
-        float mouseX = lookInput.x * mouseSensitivity;
-        float mouseY = lookInput.y * mouseSensitivity;
+        bool usingGamepad = Gamepad.current != null && Gamepad.current.rightStick.ReadValue().sqrMagnitude > 0.0001f;
 
-        // Rotate body (yaw)
-        transform.Rotate(Vector3.up * mouseX);
+        float lookX;
+        float lookY;
 
-        // Rotate camera (pitch)
-        xRotation -= mouseY;
+        if (usingGamepad)
+        {
+            // Stick input is a direction/speed, so scale by turn speed and deltaTime
+            lookX = lookInput.x * gamepadLookSpeed * Time.deltaTime;
+            lookY = lookInput.y * gamepadLookSpeed * Time.deltaTime;
+        }
+        else
+        {
+            // Mouse input is already delta-like
+            lookX = lookInput.x * mouseSensitivity;
+            lookY = lookInput.y * mouseSensitivity;
+        }
+
+        transform.Rotate(Vector3.up * lookX);
+
+        xRotation -= lookY;
         xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
 
         cameraPivot.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
@@ -132,7 +141,6 @@ public class FPSController : MonoBehaviour
 
     void Jump()
     {
-        // Let jumping work as normal; hover will re-establish gap when you land.
         if (controller.isGrounded)
         {
             yVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);

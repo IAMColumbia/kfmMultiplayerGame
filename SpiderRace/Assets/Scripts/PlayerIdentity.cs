@@ -9,12 +9,16 @@ public class PlayerIdentity : MonoBehaviour
     private PlayerInput playerInput;
     private PlayerSetup playerSetup;
     private PropDisguise propDisguise;
+    private FPSController fpsController;
+    private PlayerTagger playerTagger;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         playerSetup = GetComponent<PlayerSetup>();
         propDisguise = GetComponent<PropDisguise>();
+        fpsController = GetComponent<FPSController>();
+        playerTagger = GetComponent<PlayerTagger>();
     }
 
     private void Start()
@@ -29,11 +33,26 @@ public class PlayerIdentity : MonoBehaviour
         Debug.Log($"Player {playerIndex} score: {score}");
     }
 
+    public void ResetScore()
+    {
+        score = 0;
+    }
+
     public void RespawnAndRedisguise()
     {
-        playerSetup.Respawn();
+        if (playerSetup != null)
+            playerSetup.Respawn();
 
         if (propDisguise != null)
             propDisguise.AssignRandomProp();
+    }
+
+    public void SetGameplayEnabled(bool enabled)
+    {
+        if (fpsController != null)
+            fpsController.enabled = enabled;
+
+        if (playerTagger != null)
+            playerTagger.enabled = enabled;
     }
 }

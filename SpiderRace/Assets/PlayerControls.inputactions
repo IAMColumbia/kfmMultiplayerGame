@@ -36,7 +36,7 @@
                 {
                     "name": "Tag",
                     "type": "Button",
-                    "id": "1c263744-39aa-4a94-93be-658062e7d309",
+                    "id": "116cd266-ae9b-44b3-96ee-81a553731692",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -85,28 +85,6 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c8b62277-5662-4ae1-9a2c-e3afafd13d22",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard",
-                    "action": "Tag",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d7e42a5b-bc94-49c7-b9f2-e373a4849a01",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Gamepad",
-                    "action": "Tag",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -175,6 +153,28 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "8764e2a6-4ba1-442d-9fd3-07781ee2052d",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard",
+                    "action": "Tag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "23e80f83-a17d-48ea-9003-7bedc22ecd33",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Tag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 255916813386200072}
   - component: {fileID: 5409065681807482150}
   - component: {fileID: 4090175656473323946}
+  - component: {fileID: -7114928889719631459}
+  - component: {fileID: -6000025111596713175}
   m_Layer: 0
   m_Name: PlayerBase
   m_TagString: Untagged
@@ -58,12 +60,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 3.29
-  m_Radius: 0.73
+  m_Radius: 1.2
   m_SlopeLimit: 14.32
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 2.45, z: 0.02}
+  m_Center: {x: 0, y: 1.23, z: -0.52}
 --- !u!114 &2314256989503382211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,33 +104,9 @@ MonoBehaviour:
     m_ActionId: ec8f5073-3f35-475e-b2e4-5833f6af6d4b
     m_ActionName: 'Player/Jump[/Keyboard/space]'
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4095356961705896042, guid: 31f39689086a1954aacb3a1bd0e45cbe, type: 3}
-        m_TargetAssemblyTypeName: RangedWeapon, Assembly-CSharp
-        m_MethodName: OnAttack
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 4255451373467371187, guid: f97567725b3471e40a5f7aca12c0ca6a, type: 3}
-        m_TargetAssemblyTypeName: MeleeAttack, Assembly-CSharp
-        m_MethodName: OnAttack
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 1c263744-39aa-4a94-93be-658062e7d309
-    m_ActionName: 'Player/Attack[/Mouse/leftButton]'
+      m_Calls: []
+    m_ActionId: 116cd266-ae9b-44b3-96ee-81a553731692
+    m_ActionName: 'Player/Tag[/Mouse/leftButton,/XInputControllerWindows1/rightTrigger]'
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -202,7 +180,6 @@ MonoBehaviour:
   - {fileID: 6509790430591554645, guid: 14f1193ae2632b84387fd8f29ff184ba, type: 3}
   - {fileID: 8286936205713530724, guid: eabe313bd3b8f1b4bb154528a0a0c9d7, type: 3}
   - {fileID: 1187427611028405127, guid: 8da96afa35f73724694863d9f61376f8, type: 3}
-  - {fileID: 1230452984285849986, guid: a629e44d230f4e145a3965b02fcc06ce, type: 3}
   - {fileID: 6234458758814886065, guid: a116d15b9f7887047a3e785dde219d0e, type: 3}
   - {fileID: 5354597314447716042, guid: f701e1160e225a6498f1e6d0abcac0df, type: 3}
   - {fileID: 2030915637044319608, guid: 8c688351c9b10fe40b53514c05447930, type: 3}
@@ -210,6 +187,36 @@ MonoBehaviour:
   - {fileID: 8862062673919922096, guid: 1f69d1f9e44d40543883c0258d882911, type: 3}
   - {fileID: 7723384010712916006, guid: 95a44fca049e5dc4eba0dfe135b582ec, type: 3}
   - {fileID: 3956242832543719138, guid: de75fb05ea86eff44a82a453a971d447, type: 3}
+--- !u!114 &-7114928889719631459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922453904794528035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9faff6aa1ebcc5f4692a8cdf51542100, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerTagger
+  playerCamera: {fileID: 5653965986335140530}
+  tagRange: 3
+  tagMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &-6000025111596713175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922453904794528035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 941e49cb1ee11ee4599abeb043c24fa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerPowerups
+  speedMultiplier: 5
 --- !u!1 &1287066006805150190
 GameObject:
   m_ObjectHideFlags: 0
@@ -238,7 +245,7 @@ Transform:
   m_GameObject: {fileID: 1287066006805150190}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.022, y: 0.27, z: 3.303}
+  m_LocalPosition: {x: -0.022, y: 0.27, z: 1.29}
   m_LocalScale: {x: 1, y: 0.69668, z: 0.46714}
   m_ConstrainProportionsScale: 0
   m_Children: []

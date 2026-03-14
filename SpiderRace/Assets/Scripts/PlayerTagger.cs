@@ -31,26 +31,34 @@ public class PlayerTagger : MonoBehaviour
 
     private void OnTagPerformed(InputAction.CallbackContext ctx)
     {
+            Debug.Log($"Player {identity.playerIndex} pressed TAG");
         TryTag();
     }
 
-    private void TryTag()
+private void TryTag()
+{
+    Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+
+    Debug.DrawRay(ray.origin, ray.direction * tagRange, Color.red, 2f);
+
+    if (Physics.Raycast(ray, out RaycastHit hit, tagRange, tagMask, QueryTriggerInteraction.Ignore))
     {
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        Debug.Log($"Raycast hit: {hit.collider.name}");
 
-        if (Physics.Raycast(ray, out RaycastHit hit, tagRange, tagMask, QueryTriggerInteraction.Ignore))
+        TagTarget target = hit.collider.GetComponentInParent<TagTarget>();
+
+        if (target != null && target.Owner != identity)
         {
-            TagTarget target = hit.collider.GetComponentInParent<TagTarget>();
+            Debug.Log($"Player {identity.playerIndex} tagged Player {target.Owner.playerIndex}");
 
-            if (target != null && target.Owner != identity)
-            {
-                identity.AddScore(1);
-                target.Owner.RespawnAndRedisguise();
-                return;
-            }
+            identity.AddScore(1);
+            target.Owner.RespawnAndRedisguise();
+            return;
         }
-
-        // false tag
-        identity.RespawnAndRedisguise();
     }
+
+    Debug.Log($"Player {identity.playerIndex} FALSE TAG");
+    identity.RespawnAndRedisguise();
+}
+
 }
