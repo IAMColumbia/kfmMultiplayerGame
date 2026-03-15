@@ -24,7 +24,7 @@ public class Pickup : MonoBehaviour
         if (powerups == null) return;
 
         powerups.ApplyPickup(pickupType, duration);
-        powerups.PlayPickupSound(pickupSound, 1.5f);
+        powerups.PlayPickupSound(pickupSound, 2f);
 
         SpawnedPickup spawnedPickup = GetComponent<SpawnedPickup>();
         if (spawnedPickup != null)

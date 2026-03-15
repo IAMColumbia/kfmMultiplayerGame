@@ -83,7 +83,7 @@ public class PlayerTagger : MonoBehaviour
                 if (tagSuccessClip != null && sfxSource != null)
                 {
                     sfxSource.pitch = Random.Range(0.9f, 1.1f);
-                    sfxSource.PlayOneShot(tagSuccessClip, 1.5f);
+                    sfxSource.PlayOneShot(tagSuccessClip, 2f);
                 }
 
                 target.Owner.RespawnAndRedisguise();
@@ -103,7 +103,7 @@ public class PlayerTagger : MonoBehaviour
         if (tagFailClip != null && sfxSource != null)
         {
             sfxSource.pitch = Random.Range(0.9f, 1.1f);
-            sfxSource.PlayOneShot(tagFailClip, 1.5f);
+            sfxSource.PlayOneShot(tagFailClip, 2f);
         }
 
         identity.RespawnAndRedisguise();

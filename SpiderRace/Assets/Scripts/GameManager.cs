@@ -13,9 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioClip[] musicTracks;
-    [SerializeField] private float normalMusicVolume = 0.2f;
     [SerializeField] private float duckedMusicVolume = 0.05f;
-    [SerializeField] private float musicDuckDuration = 1.5f;
     [SerializeField] private float musicNormalVolume = 0.2f;
     [SerializeField] private float musicFadeVolume = 0.05f;
     [SerializeField] private float musicFadeTime = 1.2f;
@@ -25,6 +23,8 @@ public class GameManager : MonoBehaviour
 
     public float TimeRemaining => timer;
     public bool RoundActive => roundActive;
+    private int lastTrackIndex = -1;
+    private Coroutine musicFadeCoroutine;
 
     private void Awake()
     {
@@ -41,12 +41,10 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         StartRound();
-        
+
         if (musicSource != null)
-        {
-            musicSource.volume = normalMusicVolume;
-        }
-        
+            musicSource.volume = musicNormalVolume;
+
         PlayRandomTrack();
     }
 
@@ -73,7 +71,7 @@ public class GameManager : MonoBehaviour
         timer = roundLength;
         roundActive = true;
 
-        StartCoroutine(FadeMusic(musicNormalVolume));
+        StartMusicFade(musicNormalVolume);
 
         PlayerIdentity[] players = FindObjectsByType<PlayerIdentity>(FindObjectsSortMode.None);
 
@@ -94,20 +92,15 @@ public class GameManager : MonoBehaviour
 
     private void EndRound()
     {
-        roundActive = false;
+    roundActive = false;
 
-        StartCoroutine(FadeMusic(musicFadeVolume));
+    StartMusicFade(musicFadeVolume);
 
-        if (musicSource != null)
-        {
-            musicSource.volume = duckedMusicVolume;
-        }
-
-        if (roundEndClip != null && sfxSource != null)
-        {
-            sfxSource.pitch = 1f;
-            sfxSource.PlayOneShot(roundEndClip, 1.5f);
-        }
+    if (roundEndClip != null && sfxSource != null)
+    {
+        sfxSource.pitch = 1f;
+        sfxSource.PlayOneShot(roundEndClip, 2.5f);
+    }
         PlayerIdentity[] players = FindObjectsByType<PlayerIdentity>(FindObjectsSortMode.None);
 
         PlayerIdentity winner = null;
@@ -154,20 +147,13 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator RestartRoundRoutine()
     {
-        float duckTime = Mathf.Min(musicDuckDuration, endRoundDelay);
-
-        yield return new WaitForSeconds(duckTime);
-
-        if (musicSource != null)
-        {
-            musicSource.volume = normalMusicVolume;
-        }
-
-        yield return new WaitForSeconds(endRoundDelay - duckTime);
+        yield return new WaitForSeconds(endRoundDelay);
 
         StartRound();
+
+        StartMusicFade(musicNormalVolume);
     }
-        private IEnumerator FadeMusic(float targetVolume)
+    private IEnumerator FadeMusic(float targetVolume)
     {
         if (musicSource == null) yield break;
 
@@ -180,22 +166,39 @@ public class GameManager : MonoBehaviour
             float t = timer / musicFadeTime;
 
             musicSource.volume = Mathf.Lerp(startVolume, targetVolume, t);
-
             yield return null;
         }
 
         musicSource.volume = targetVolume;
+        musicFadeCoroutine = null;
     }
-
     
     private void PlayRandomTrack()
     {
-        if (musicTracks == null || musicTracks.Length == 0)
+        if (musicTracks == null || musicTracks.Length == 0 || musicSource == null)
             return;
 
-        int index = Random.Range(0, musicTracks.Length);
+        int index;
+
+        do
+        {
+            index = Random.Range(0, musicTracks.Length);
+        }
+        while (musicTracks.Length > 1 && index == lastTrackIndex);
+
+        lastTrackIndex = index;
 
         musicSource.clip = musicTracks[index];
         musicSource.Play();
+    }
+
+    private void StartMusicFade(float targetVolume)
+    {
+        if (musicFadeCoroutine != null)
+        {
+            StopCoroutine(musicFadeCoroutine);
+        }
+
+        musicFadeCoroutine = StartCoroutine(FadeMusic(targetVolume));
     }
 }
