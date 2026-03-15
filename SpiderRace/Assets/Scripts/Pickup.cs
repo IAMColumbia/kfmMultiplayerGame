@@ -12,6 +12,7 @@ public class Pickup : MonoBehaviour
 
     [SerializeField] private PickupType pickupType;
     [SerializeField] private float duration = 5f;
+    [SerializeField] private AudioClip pickupSound;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -23,6 +24,7 @@ public class Pickup : MonoBehaviour
         if (powerups == null) return;
 
         powerups.ApplyPickup(pickupType, duration);
+        powerups.PlayPickupSound(pickupSound, 1.5f);
 
         SpawnedPickup spawnedPickup = GetComponent<SpawnedPickup>();
         if (spawnedPickup != null)

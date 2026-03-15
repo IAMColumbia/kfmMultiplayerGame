@@ -9,6 +9,16 @@ public class GameManager : MonoBehaviour
     [Header("Round Settings")]
     [SerializeField] private float roundLength = 180f;
     [SerializeField] private float endRoundDelay = 4f;
+    [SerializeField] private AudioClip roundEndClip;
+    [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioClip[] musicTracks;
+    [SerializeField] private float normalMusicVolume = 0.2f;
+    [SerializeField] private float duckedMusicVolume = 0.05f;
+    [SerializeField] private float musicDuckDuration = 1.5f;
+    [SerializeField] private float musicNormalVolume = 0.2f;
+    [SerializeField] private float musicFadeVolume = 0.05f;
+    [SerializeField] private float musicFadeTime = 1.2f;
 
     private float timer;
     private bool roundActive = true;
@@ -31,10 +41,22 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         StartRound();
+        
+        if (musicSource != null)
+        {
+            musicSource.volume = normalMusicVolume;
+        }
+        
+        PlayRandomTrack();
     }
 
     private void Update()
     {
+        if (musicSource != null && !musicSource.isPlaying)
+        {
+            PlayRandomTrack();
+        }
+
         if (!roundActive) return;
 
         timer -= Time.deltaTime;
@@ -50,6 +72,8 @@ public class GameManager : MonoBehaviour
     {
         timer = roundLength;
         roundActive = true;
+
+        StartCoroutine(FadeMusic(musicNormalVolume));
 
         PlayerIdentity[] players = FindObjectsByType<PlayerIdentity>(FindObjectsSortMode.None);
 
@@ -72,6 +96,18 @@ public class GameManager : MonoBehaviour
     {
         roundActive = false;
 
+        StartCoroutine(FadeMusic(musicFadeVolume));
+
+        if (musicSource != null)
+        {
+            musicSource.volume = duckedMusicVolume;
+        }
+
+        if (roundEndClip != null && sfxSource != null)
+        {
+            sfxSource.pitch = 1f;
+            sfxSource.PlayOneShot(roundEndClip, 1.5f);
+        }
         PlayerIdentity[] players = FindObjectsByType<PlayerIdentity>(FindObjectsSortMode.None);
 
         PlayerIdentity winner = null;
@@ -118,7 +154,48 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator RestartRoundRoutine()
     {
-        yield return new WaitForSeconds(endRoundDelay);
+        float duckTime = Mathf.Min(musicDuckDuration, endRoundDelay);
+
+        yield return new WaitForSeconds(duckTime);
+
+        if (musicSource != null)
+        {
+            musicSource.volume = normalMusicVolume;
+        }
+
+        yield return new WaitForSeconds(endRoundDelay - duckTime);
+
         StartRound();
+    }
+        private IEnumerator FadeMusic(float targetVolume)
+    {
+        if (musicSource == null) yield break;
+
+        float startVolume = musicSource.volume;
+        float timer = 0f;
+
+        while (timer < musicFadeTime)
+        {
+            timer += Time.deltaTime;
+            float t = timer / musicFadeTime;
+
+            musicSource.volume = Mathf.Lerp(startVolume, targetVolume, t);
+
+            yield return null;
+        }
+
+        musicSource.volume = targetVolume;
+    }
+
+    
+    private void PlayRandomTrack()
+    {
+        if (musicTracks == null || musicTracks.Length == 0)
+            return;
+
+        int index = Random.Range(0, musicTracks.Length);
+
+        musicSource.clip = musicTracks[index];
+        musicSource.Play();
     }
 }

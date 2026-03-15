@@ -4,6 +4,7 @@ public class PlayerPowerups : MonoBehaviour
 {
     [Header("Speed Boost Settings")]
     [SerializeField] private float speedMultiplier = 1.5f;
+    [SerializeField] private AudioSource sfxSource;
 
     private FPSController fpsController;
     private PlayerSetup playerSetup;
@@ -16,6 +17,14 @@ public class PlayerPowerups : MonoBehaviour
         fpsController = GetComponent<FPSController>();
         playerSetup = GetComponent<PlayerSetup>();
         propDisguise = GetComponent<PropDisguise>();
+    }
+
+        public void PlayPickupSound(AudioClip clip, float volume = 1.5f)
+    {
+        if (clip == null || sfxSource == null) return;
+
+        sfxSource.pitch = Random.Range(0.9f, 1.1f);
+        sfxSource.PlayOneShot(clip, volume);
     }
 
     public void ApplyPickup(Pickup.PickupType type, float duration)

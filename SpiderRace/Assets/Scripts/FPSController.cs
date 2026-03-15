@@ -25,7 +25,11 @@ public class FPSController : MonoBehaviour
     [Tooltip("What layers count as ground for hovering.")]
     public LayerMask groundMask = ~0;
 
+    [Header("Jump Feel")]
+    public float coyoteTime = 0.12f;
+    
     [Header("Look")]
+    private float coyoteTimer;
     public float mouseSensitivity = 0.15f;
     public float gamepadLookSpeed = 180f;
     public float maxLookAngle = 80f;
@@ -37,6 +41,7 @@ public class FPSController : MonoBehaviour
     private float xRotation = 0f;
 
     private PlayerInput playerInput;
+
 
     void Awake()
     {
@@ -68,21 +73,46 @@ public class FPSController : MonoBehaviour
         HandleLook();
     }
 
+    private bool IsGroundedByHover()
+    {
+        Vector3 origin = transform.position + Vector3.up * 0.1f;
+
+        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask, QueryTriggerInteraction.Ignore))
+        {
+            float desiredY = hit.point.y + hoverHeight;
+            float deltaY = desiredY - transform.position.y;
+
+            // Close enough to our hover height to count as grounded
+            return deltaY > -0.08f && deltaY < 0.25f;
+        }
+
+        return false;
+    }
+
     void HandleMovement()
     {
-        Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
-        Vector3 horizontal = moveSpeed * move;
+        bool grounded = controller.isGrounded || IsGroundedByHover();
 
-        bool grounded = controller.isGrounded;
-
-        if (grounded && yVelocity < 0f)
+        if (grounded)
         {
-            yVelocity = 0f;
+            coyoteTimer = coyoteTime;
+
+            if (yVelocity < 0f)
+            {
+                yVelocity = -2f;
+            }
+        }
+        else
+        {
+            coyoteTimer -= Time.deltaTime;
         }
 
         yVelocity += gravity * Time.deltaTime;
 
+        Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
+        Vector3 horizontal = move * moveSpeed;
         Vector3 velocity = horizontal + Vector3.up * yVelocity;
+
         controller.Move(velocity * Time.deltaTime);
 
         ApplyHover();
@@ -90,6 +120,8 @@ public class FPSController : MonoBehaviour
 
     void ApplyHover()
     {
+        if (yVelocity > 0f)
+            return;
         Vector3 origin = transform.position + Vector3.up * 0.1f;
 
         if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, groundCheckDistance, groundMask, QueryTriggerInteraction.Ignore))
@@ -141,9 +173,10 @@ public class FPSController : MonoBehaviour
 
     void Jump()
     {
-        if (controller.isGrounded)
+        if (coyoteTimer > 0f)
         {
             yVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            coyoteTimer = 0f;
         }
     }
 }

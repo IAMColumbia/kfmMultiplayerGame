@@ -25,6 +25,13 @@ public class PlayerIdentity : MonoBehaviour
     {
         if (playerInput != null)
             playerIndex = playerInput.playerIndex;
+
+        TagTarget[] allTargets = GetComponentsInChildren<TagTarget>(true);
+
+        foreach (TagTarget target in allTargets)
+        {
+            target.Initialize(this);
+        }
     }
 
     public void AddScore(int amount)
