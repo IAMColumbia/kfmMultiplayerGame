@@ -4,11 +4,9 @@ using UnityEngine.InputSystem;
 public class PlayerTagger : MonoBehaviour
 {
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private float tagRange = 3f;
-    [SerializeField] private LayerMask tagMask = ~0;
+    [SerializeField] private float tagRange = 20f;
     [SerializeField] private AudioClip tagSuccessClip;
     [SerializeField] private AudioClip tagFailClip;
-    [SerializeField] private float tagRadius = 0.35f;
     [SerializeField] private AudioSource sfxSource;
 
     private PlayerInput playerInput;
@@ -31,82 +29,95 @@ public class PlayerTagger : MonoBehaviour
     private void OnDisable()
     {
         if (playerInput == null) return;
+
         var actions = playerInput.actions;
         actions["Tag"].performed -= OnTagPerformed;
     }
 
     private void OnTagPerformed(InputAction.CallbackContext ctx)
     {
-            Debug.Log($"Player {identity.playerIndex} pressed TAG");
+        Debug.Log($"Player {identity.playerIndex} pressed TAG");
         TryTag();
     }
 
     private void TryTag()
     {
-        if (playerCamera == null)
+        PlayerIdentity bestTarget = FindBestTagTarget();
+
+        if (bestTarget != null)
         {
-            Debug.LogError("PlayerTagger has no playerCamera assigned.");
+            Debug.Log($"SUCCESS: Player {identity.playerIndex} tagged Player {bestTarget.playerIndex}");
+
+            identity.AddScore(1);
+
+            if (feedbackUI != null)
+            {
+                feedbackUI.ShowTagSuccess();
+            }
+
+            if (tagSuccessClip != null && sfxSource != null)
+            {
+                sfxSource.pitch = Random.Range(0.9f, 1.1f);
+                sfxSource.PlayOneShot(tagSuccessClip, 2f);
+            }
+
+            bestTarget.RespawnAndRedisguise();
             return;
         }
 
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        Debug.DrawRay(ray.origin, ray.direction * tagRange, Color.red, 2f);
-
-        if (Physics.SphereCast(ray, tagRadius, out RaycastHit hit, tagRange, tagMask, QueryTriggerInteraction.Ignore))
-        {
-            Debug.Log($"Raycast hit: {hit.collider.name}");
-
-            TagTarget target = hit.collider.GetComponentInParent<TagTarget>();
-
-            if (target == null)
-            {
-                Debug.Log("Hit something, but no TagTarget was found in parent chain.");
-            }
-            else if (target.Owner == null)
-            {
-                Debug.Log("TagTarget exists, but Owner is NULL.");
-            }
-            else if (target.Owner == identity)
-            {
-                Debug.Log("You hit your own TagTarget.");
-            }
-            else
-            {
-                Debug.Log($"SUCCESS: Player {identity.playerIndex} tagged Player {target.Owner.playerIndex}");
-                identity.AddScore(1);
-                if (feedbackUI != null)
-                {
-                    feedbackUI.ShowTagSuccess();
-                }
-                
-
-                if (tagSuccessClip != null && sfxSource != null)
-                {
-                    sfxSource.pitch = Random.Range(0.9f, 1.1f);
-                    sfxSource.PlayOneShot(tagSuccessClip, 2f);
-                }
-
-                target.Owner.RespawnAndRedisguise();
-                return;
-            }
-        }
-        else
-        {
-            Debug.Log("Raycast hit nothing.");
-        }
-
         Debug.Log("FALSE TAG");
+
         if (feedbackUI != null)
         {
             feedbackUI.ShowTagFail();
         }
+
         if (tagFailClip != null && sfxSource != null)
         {
             sfxSource.pitch = Random.Range(0.9f, 1.1f);
             sfxSource.PlayOneShot(tagFailClip, 2f);
         }
 
-        identity.RespawnAndRedisguise();
     }
 
+    private PlayerIdentity FindBestTagTarget()
+    {
+        PlayerIdentity[] allPlayers = FindObjectsByType<PlayerIdentity>(FindObjectsSortMode.None);
+
+        PlayerIdentity bestTarget = null;
+        float bestDistance = float.MaxValue;
+
+        Vector3 myPosition = transform.position;
+        Vector2 myFlat = new Vector2(myPosition.x, myPosition.z);
+
+        foreach (PlayerIdentity otherPlayer in allPlayers)
+        {
+            if (otherPlayer == null || otherPlayer == identity)
+                continue;
+
+            Vector3 otherPosition = otherPlayer.transform.position;
+            Vector2 otherFlat = new Vector2(otherPosition.x, otherPosition.z);
+
+            float distance = Vector2.Distance(myFlat, otherFlat);
+
+            Debug.Log($"Flat distance from Player {identity.playerIndex} to Player {otherPlayer.playerIndex}: {distance}");
+
+            if (distance > tagRange)
+                continue;
+
+            if (distance < bestDistance)
+            {
+                bestDistance = distance;
+                bestTarget = otherPlayer;
+            }
+        }
+
+        return bestTarget;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, tagRange);
+    }
 }

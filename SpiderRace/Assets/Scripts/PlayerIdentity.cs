@@ -5,6 +5,7 @@ public class PlayerIdentity : MonoBehaviour
 {
     public int playerIndex;
     public int score;
+    [SerializeField] private PickupPopupUI pickupPopupUI;
 
     private PlayerInput playerInput;
     private PlayerSetup playerSetup;
@@ -33,7 +34,13 @@ public class PlayerIdentity : MonoBehaviour
             target.Initialize(this);
         }
     }
-
+    public void ShowPickupPopup(string pickupName)
+    {
+        if (pickupPopupUI != null)
+        {
+            pickupPopupUI.ShowPickup(pickupName);
+        }
+    }
     public void AddScore(int amount)
     {
         score += amount;

@@ -19,10 +19,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float musicFadeTime = 1.2f;
 
     private float timer;
-    private bool roundActive = true;
+    private bool roundActive = false;
 
     public float TimeRemaining => timer;
     public bool RoundActive => roundActive;
+
     private int lastTrackIndex = -1;
     private Coroutine musicFadeCoroutine;
 
@@ -40,7 +41,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        StartRound();
+        // Do NOT start the round automatically.
+        timer = roundLength;
+        roundActive = false;
 
         if (musicSource != null)
             musicSource.volume = musicNormalVolume;
@@ -55,7 +58,8 @@ public class GameManager : MonoBehaviour
             PlayRandomTrack();
         }
 
-        if (!roundActive) return;
+        if (!roundActive)
+            return;
 
         timer -= Time.deltaTime;
 
@@ -66,7 +70,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void StartRound()
+    public void StartRound()
     {
         timer = roundLength;
         roundActive = true;
@@ -90,17 +94,23 @@ public class GameManager : MonoBehaviour
         Debug.Log("Round started.");
     }
 
+    public void PauseRound()
+    {
+        roundActive = false;
+    }
+
     private void EndRound()
     {
-    roundActive = false;
+        roundActive = false;
 
-    StartMusicFade(musicFadeVolume);
+        StartMusicFade(musicFadeVolume);
 
-    if (roundEndClip != null && sfxSource != null)
-    {
-        sfxSource.pitch = 1f;
-        sfxSource.PlayOneShot(roundEndClip, 2.5f);
-    }
+        if (roundEndClip != null && sfxSource != null)
+        {
+            sfxSource.pitch = 1f;
+            sfxSource.PlayOneShot(roundEndClip, 2.5f);
+        }
+
         PlayerIdentity[] players = FindObjectsByType<PlayerIdentity>(FindObjectsSortMode.None);
 
         PlayerIdentity winner = null;
@@ -148,11 +158,10 @@ public class GameManager : MonoBehaviour
     private IEnumerator RestartRoundRoutine()
     {
         yield return new WaitForSeconds(endRoundDelay);
-
         StartRound();
-
         StartMusicFade(musicNormalVolume);
     }
+
     private IEnumerator FadeMusic(float targetVolume)
     {
         if (musicSource == null) yield break;
@@ -172,7 +181,7 @@ public class GameManager : MonoBehaviour
         musicSource.volume = targetVolume;
         musicFadeCoroutine = null;
     }
-    
+
     private void PlayRandomTrack()
     {
         if (musicTracks == null || musicTracks.Length == 0 || musicSource == null)

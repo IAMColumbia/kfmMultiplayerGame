@@ -30,8 +30,8 @@ public class FPSController : MonoBehaviour
     
     [Header("Look")]
     private float coyoteTimer;
-    public float mouseSensitivity = 0.15f;
-    public float gamepadLookSpeed = 180f;
+    public float mouseSensitivity = 0.02f;
+    public float gamepadLookSpeed = 240f;
     public float maxLookAngle = 80f;
 
     private Vector2 moveInput;
@@ -42,23 +42,33 @@ public class FPSController : MonoBehaviour
 
     private PlayerInput playerInput;
 
+    private InputAction moveAction;
+    private InputAction lookAction;
+    private InputAction jumpAction;
+
 
     void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+
+        moveAction = playerInput.actions["Move"];
+        lookAction = playerInput.actions["Look"];
+        jumpAction = playerInput.actions["Jump"];
     }
 
     void OnEnable()
     {
-        var actions = playerInput.actions;
+        jumpAction.performed += OnJumpPerformed;
+    }
 
-        actions["Move"].performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        actions["Move"].canceled += ctx => moveInput = Vector2.zero;
+    void OnDisable()
+    {
+        jumpAction.performed -= OnJumpPerformed;
+    }
 
-        actions["Look"].performed += ctx => lookInput = ctx.ReadValue<Vector2>();
-        actions["Look"].canceled += ctx => lookInput = Vector2.zero;
-
-        actions["Jump"].performed += ctx => Jump();
+    private void OnJumpPerformed(InputAction.CallbackContext ctx)
+    {
+        Jump();
     }
 
     void Start()
@@ -69,6 +79,9 @@ public class FPSController : MonoBehaviour
 
     void Update()
     {
+        moveInput = moveAction.ReadValue<Vector2>();
+        lookInput = lookAction.ReadValue<Vector2>();
+
         HandleMovement();
         HandleLook();
     }
@@ -145,20 +158,18 @@ public class FPSController : MonoBehaviour
 
     void HandleLook()
     {
-        bool usingGamepad = Gamepad.current != null && Gamepad.current.rightStick.ReadValue().sqrMagnitude > 0.0001f;
+        bool usingGamepad = playerInput.currentControlScheme == "Gamepad";
 
         float lookX;
         float lookY;
 
         if (usingGamepad)
         {
-            // Stick input is a direction/speed, so scale by turn speed and deltaTime
             lookX = lookInput.x * gamepadLookSpeed * Time.deltaTime;
             lookY = lookInput.y * gamepadLookSpeed * Time.deltaTime;
         }
         else
         {
-            // Mouse input is already delta-like
             lookX = lookInput.x * mouseSensitivity;
             lookY = lookInput.y * mouseSensitivity;
         }

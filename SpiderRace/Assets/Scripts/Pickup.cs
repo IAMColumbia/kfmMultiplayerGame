@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Pickup : MonoBehaviour
 {
-        public enum PickupType
+    public enum PickupType
     {
         ChangeAppearance,
         Invisibility,
@@ -26,6 +26,16 @@ public class Pickup : MonoBehaviour
         powerups.ApplyPickup(pickupType, duration);
         powerups.PlayPickupSound(pickupSound, 2f);
 
+        PlayerIdentity playerIdentity = other.GetComponent<PlayerIdentity>();
+
+        if (playerIdentity == null)
+            playerIdentity = other.GetComponentInParent<PlayerIdentity>();
+
+        if (playerIdentity != null)
+        {
+            playerIdentity.ShowPickupPopup(GetPickupDisplayName());
+        }
+
         SpawnedPickup spawnedPickup = GetComponent<SpawnedPickup>();
         if (spawnedPickup != null)
         {
@@ -33,5 +43,22 @@ public class Pickup : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private string GetPickupDisplayName()
+    {
+        switch (pickupType)
+        {
+            case PickupType.ChangeAppearance:
+                return "Appearance changed!";
+            case PickupType.Invisibility:
+                return "Invisibility acquired! (10 seconds)";
+            case PickupType.Teleport:
+                return "Player teleported!";
+            case PickupType.SpeedBoost:
+                return "Speed boosted! (5 seconds)";
+            default:
+                return "Pickup";
+        }
     }
 }

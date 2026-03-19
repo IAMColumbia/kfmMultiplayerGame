@@ -207,7 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pickup
   pickupType: 0
-  duration: 5
+  duration: 120
   pickupSound: {fileID: 8300000, guid: 0d270f94ccc2f324498bbb32d85d46cd, type: 3}
 --- !u!135 &8888874302455693327
 SphereCollider:
