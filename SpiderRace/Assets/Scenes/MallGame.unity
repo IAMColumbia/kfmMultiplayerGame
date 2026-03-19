@@ -9383,10 +9383,11 @@ MonoBehaviour:
   sfxSource: {fileID: 148147855}
   musicSource: {fileID: 148147854}
   musicTracks:
-  - {fileID: 8300000, guid: 6f31ccb312e048545ab00115ed885684, type: 3}
-  - {fileID: 8300000, guid: 462687fc22059944fbec32c7fc1f40a0, type: 3}
-  - {fileID: 8300000, guid: 8a18e6c6d8be5374cad01957695caa8d, type: 3}
-  - {fileID: 8300000, guid: 37120d768ec5acf45b968a91e836e3ea, type: 3}
+  - {fileID: 8300000, guid: 5d5e0eaaa94017747b2956c22ca78df3, type: 3}
+  - {fileID: 8300000, guid: 6971ce3dfd03e54428caf286173ec90f, type: 3}
+  - {fileID: 8300000, guid: dada611a3484fdc4b9860db16ef8ac59, type: 3}
+  - {fileID: 8300000, guid: 3ea86e4b948673349ad9a7fcb8fd50b3, type: 3}
+  - {fileID: 8300000, guid: c6c8da7426af1144584dd1e1dd659f00, type: 3}
   duckedMusicVolume: 0
   musicNormalVolume: 0.6
   musicFadeVolume: 0.04
@@ -48934,8 +48935,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 58
-  m_fontSizeBase: 58
+  m_fontSize: 38
+  m_fontSizeBase: 38
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -72872,8 +72873,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 44
-  m_fontSizeBase: 44
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -73839,8 +73840,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -90198,7 +90199,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 615, y: 425}
+  m_AnchoredPosition: {x: 417, y: 200}
   m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1407963171
@@ -90248,8 +90249,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -127345,7 +127346,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -610, y: 432}
+  m_AnchoredPosition: {x: -235, y: 200}
   m_SizeDelta: {x: 350, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1957339700
@@ -127395,8 +127396,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -128960,7 +128961,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.2, y: 437}
+  m_AnchoredPosition: {x: 96, y: 205}
   m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1984524967
@@ -129010,8 +129011,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
-  m_fontSizeBase: 60
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -129049,7 +129050,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -36.03528, y: 0, z: -44.206787, w: 0}
+  m_margin: {x: -36.03528, y: 0, z: 133.65063, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

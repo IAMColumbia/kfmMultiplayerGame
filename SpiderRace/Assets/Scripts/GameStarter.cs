@@ -23,12 +23,24 @@ public class GameStarter : MonoBehaviour
         joinedPlayers = 0;
         gameStarted = false;
 
+        RefreshJoinedPlayersText();
+        SetGameplayEnabled(false);
+
+        bool explorationMode =
+            GameManager.Instance != null &&
+            GameManager.Instance.CurrentMode == GameManager.GameMode.Exploration;
+
+        if (explorationMode)
+        {
+            if (waitingForPlayersPanel != null)
+                waitingForPlayersPanel.SetActive(false);
+
+            BeginExplorationMode();
+            return;
+        }
+
         if (waitingForPlayersPanel != null)
             waitingForPlayersPanel.SetActive(true);
-
-        RefreshJoinedPlayersText();
-
-        SetGameplayEnabled(false);
 
         if (playerInputManager != null)
             playerInputManager.EnableJoining();
@@ -40,6 +52,10 @@ public class GameStarter : MonoBehaviour
     public void OnPlayerJoined(PlayerInput playerInput)
     {
         if (gameStarted)
+            return;
+
+        if (GameManager.Instance != null &&
+            GameManager.Instance.CurrentMode == GameManager.GameMode.Exploration)
             return;
 
         joinedPlayers++;
@@ -69,6 +85,27 @@ public class GameStarter : MonoBehaviour
             GameManager.Instance.StartRound();
 
         Debug.Log("Game started!");
+    }
+
+    private void BeginExplorationMode()
+    {
+        gameStarted = true;
+
+        if (waitingForPlayersPanel != null)
+            waitingForPlayersPanel.SetActive(false);
+
+        if (playerInputManager != null)
+        {
+            playerInputManager.DisableJoining();
+            playerInputManager.JoinPlayer();
+        }
+
+        SetGameplayEnabled(true);
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.StartExplorationMode();
+
+        Debug.Log("Exploration mode started!");
     }
 
     private void SetGameplayEnabled(bool enabled)

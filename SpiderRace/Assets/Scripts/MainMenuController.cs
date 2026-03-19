@@ -7,19 +7,34 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource uiAudioSource;
     [SerializeField] private AudioClip clickSound;
-    
+
     [Header("Fade Settings")]
     [SerializeField] private float fadeDuration = 1.5f;
 
     public void StartGame()
     {
-        uiAudioSource.PlayOneShot(clickSound);
+        GameSession.SelectedMode = GameManager.GameMode.Multiplayer;
+
+        if (uiAudioSource != null && clickSound != null)
+            uiAudioSource.PlayOneShot(clickSound);
+
+        StartCoroutine(FadeAndLoad());
+    }
+
+    public void OnExplorePressed()
+    {
+        GameSession.SelectedMode = GameManager.GameMode.Exploration;
+
+        if (uiAudioSource != null && clickSound != null)
+            uiAudioSource.PlayOneShot(clickSound);
+
         StartCoroutine(FadeAndLoad());
     }
 
     public void QuitGame()
     {
-        uiAudioSource.PlayOneShot(clickSound);
+        if (uiAudioSource != null && clickSound != null)
+            uiAudioSource.PlayOneShot(clickSound);
 
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -32,17 +47,20 @@ public class MainMenuController : MonoBehaviour
 
     private IEnumerator FadeAndLoad()
     {
-        float startVolume = musicSource.volume;
-
-        float t = 0f;
-        while (t < fadeDuration)
+        if (musicSource != null)
         {
-            t += Time.deltaTime;
-            musicSource.volume = Mathf.Lerp(startVolume, 0f, t / fadeDuration);
-            yield return null;
-        }
+            float startVolume = musicSource.volume;
+            float t = 0f;
 
-        musicSource.volume = 0f;
+            while (t < fadeDuration)
+            {
+                t += Time.deltaTime;
+                musicSource.volume = Mathf.Lerp(startVolume, 0f, t / fadeDuration);
+                yield return null;
+            }
+
+            musicSource.volume = 0f;
+        }
 
         SceneManager.LoadScene("MallGame");
     }

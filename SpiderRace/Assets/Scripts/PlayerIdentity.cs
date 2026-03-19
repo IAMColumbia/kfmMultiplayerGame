@@ -43,6 +43,10 @@ public class PlayerIdentity : MonoBehaviour
     }
     public void AddScore(int amount)
     {
+        if (GameManager.Instance != null &&
+            GameManager.Instance.CurrentMode == GameManager.GameMode.Exploration)
+            return;
+
         score += amount;
         Debug.Log($"Player {playerIndex} score: {score}");
     }

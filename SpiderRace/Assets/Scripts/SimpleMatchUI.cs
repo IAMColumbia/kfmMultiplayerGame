@@ -10,13 +10,31 @@ public class SimpleMatchUI : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance == null)
+            return;
+
+        bool explorationMode = GameManager.Instance.CurrentMode == GameManager.GameMode.Exploration;
+
+        if (timerText != null)
+            timerText.gameObject.SetActive(!explorationMode);
+
+        if (player1ScoreText != null)
+            player1ScoreText.gameObject.SetActive(!explorationMode);
+
+        if (player2ScoreText != null)
+            player2ScoreText.gameObject.SetActive(!explorationMode);
+
+        if (explorationMode)
+            return;
+
         UpdateTimer();
         UpdateScores();
     }
 
     private void UpdateTimer()
     {
-        if (GameManager.Instance == null) return;
+        if (GameManager.Instance == null || timerText == null)
+            return;
 
         float time = GameManager.Instance.TimeRemaining;
 
@@ -28,7 +46,8 @@ public class SimpleMatchUI : MonoBehaviour
 
     private void UpdateScores()
     {
-        if (player1ScoreText == null || player2ScoreText == null) return;
+        if (player1ScoreText == null || player2ScoreText == null)
+            return;
 
         PlayerIdentity[] players = FindObjectsByType<PlayerIdentity>(FindObjectsSortMode.None);
 

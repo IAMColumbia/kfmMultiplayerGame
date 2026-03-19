@@ -976,7 +976,7 @@ MonoBehaviour:
   tagSuccessCanvasGroup: {fileID: 635819273670901572}
   tagFailText: {fileID: 5775811298754138993}
   tagFailCanvasGroup: {fileID: 6949888620237688338}
-  popupDuration: 0.8
+  popupDuration: 2
   startScale: 0.6
   peakScale: 1.15
   endScale: 1
@@ -1144,7 +1144,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -253}
+  m_AnchoredPosition: {x: 0, y: -113}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9008145582565629633
@@ -1184,8 +1184,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4292151040
-  m_fontColor: {r: 0, g: 0.027427884, b: 0.8352941, a: 1}
+    rgba: 4292616448
+  m_fontColor: {r: 0, g: 0.13013388, b: 0.86415094, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public enum GameMode
+    {
+        Multiplayer,
+        Exploration
+    }
+
     public static GameManager Instance;
 
     [Header("Round Settings")]
@@ -13,19 +19,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioClip[] musicTracks;
-    [SerializeField] private float duckedMusicVolume = 0.05f;
     [SerializeField] private float musicNormalVolume = 0.2f;
     [SerializeField] private float musicFadeVolume = 0.05f;
     [SerializeField] private float musicFadeTime = 1.2f;
 
     private float timer;
     private bool roundActive = false;
+    private int lastTrackIndex = -1;
+    private Coroutine musicFadeCoroutine;
 
     public float TimeRemaining => timer;
     public bool RoundActive => roundActive;
-
-    private int lastTrackIndex = -1;
-    private Coroutine musicFadeCoroutine;
+    public GameMode CurrentMode { get; private set; }
 
     private void Awake()
     {
@@ -36,12 +41,12 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
+        CurrentMode = GameSession.SelectedMode;
         timer = roundLength;
     }
 
     private void Start()
     {
-        // Do NOT start the round automatically.
         timer = roundLength;
         roundActive = false;
 
@@ -58,6 +63,9 @@ public class GameManager : MonoBehaviour
             PlayRandomTrack();
         }
 
+        if (CurrentMode != GameMode.Multiplayer)
+            return;
+
         if (!roundActive)
             return;
 
@@ -70,8 +78,26 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void SetGameMode(GameMode mode)
+    {
+        CurrentMode = mode;
+
+        if (CurrentMode == GameMode.Exploration)
+        {
+            StartExplorationMode();
+        }
+        else
+        {
+            PauseRound();
+            timer = roundLength;
+        }
+    }
+
     public void StartRound()
     {
+        CurrentMode = GameMode.Multiplayer;
+        GameSession.SelectedMode = GameMode.Multiplayer;
+
         timer = roundLength;
         roundActive = true;
 
@@ -87,11 +113,32 @@ public class GameManager : MonoBehaviour
         }
 
         if (RoundUI.Instance != null)
-        {
             RoundUI.Instance.HideWinnerText();
-        }
 
         Debug.Log("Round started.");
+    }
+
+    public void StartExplorationMode()
+    {
+        CurrentMode = GameMode.Exploration;
+        GameSession.SelectedMode = GameMode.Exploration;
+
+        roundActive = false;
+        timer = roundLength;
+
+        StartMusicFade(musicNormalVolume);
+
+        PlayerIdentity[] players = FindObjectsByType<PlayerIdentity>(FindObjectsSortMode.None);
+
+        foreach (PlayerIdentity player in players)
+        {
+            player.SetGameplayEnabled(true);
+        }
+
+        if (RoundUI.Instance != null)
+            RoundUI.Instance.HideWinnerText();
+
+        Debug.Log("Exploration mode started.");
     }
 
     public void PauseRound()
@@ -101,6 +148,9 @@ public class GameManager : MonoBehaviour
 
     private void EndRound()
     {
+        if (CurrentMode != GameMode.Multiplayer)
+            return;
+
         roundActive = false;
 
         StartMusicFade(musicFadeVolume);
@@ -138,18 +188,14 @@ public class GameManager : MonoBehaviour
             Debug.Log("Round over! It's a tie.");
 
             if (RoundUI.Instance != null)
-            {
                 RoundUI.Instance.ShowWinnerText("Tie Game!");
-            }
         }
         else
         {
             Debug.Log($"Round over! Winner: Player {winner.playerIndex} with {winner.score} points.");
 
             if (RoundUI.Instance != null)
-            {
                 RoundUI.Instance.ShowWinnerText($"Player {winner.playerIndex + 1} Wins!");
-            }
         }
 
         StartCoroutine(RestartRoundRoutine());
@@ -158,22 +204,26 @@ public class GameManager : MonoBehaviour
     private IEnumerator RestartRoundRoutine()
     {
         yield return new WaitForSeconds(endRoundDelay);
-        StartRound();
-        StartMusicFade(musicNormalVolume);
+
+        if (CurrentMode == GameMode.Multiplayer)
+        {
+            StartRound();
+            StartMusicFade(musicNormalVolume);
+        }
     }
 
     private IEnumerator FadeMusic(float targetVolume)
     {
-        if (musicSource == null) yield break;
+        if (musicSource == null)
+            yield break;
 
         float startVolume = musicSource.volume;
-        float timer = 0f;
+        float fadeTimer = 0f;
 
-        while (timer < musicFadeTime)
+        while (fadeTimer < musicFadeTime)
         {
-            timer += Time.deltaTime;
-            float t = timer / musicFadeTime;
-
+            fadeTimer += Time.deltaTime;
+            float t = fadeTimer / musicFadeTime;
             musicSource.volume = Mathf.Lerp(startVolume, targetVolume, t);
             yield return null;
         }
@@ -196,7 +246,6 @@ public class GameManager : MonoBehaviour
         while (musicTracks.Length > 1 && index == lastTrackIndex);
 
         lastTrackIndex = index;
-
         musicSource.clip = musicTracks[index];
         musicSource.Play();
     }
@@ -204,9 +253,7 @@ public class GameManager : MonoBehaviour
     private void StartMusicFade(float targetVolume)
     {
         if (musicFadeCoroutine != null)
-        {
             StopCoroutine(musicFadeCoroutine);
-        }
 
         musicFadeCoroutine = StartCoroutine(FadeMusic(targetVolume));
     }

@@ -67,6 +67,13 @@ public class PlayerTagger : MonoBehaviour
 
         Debug.Log("FALSE TAG");
 
+        // 🚫 In exploration mode, ignore failed tags completely
+        if (GameManager.Instance != null &&
+            GameManager.Instance.CurrentMode == GameManager.GameMode.Exploration)
+        {
+            return;
+        }
+
         if (feedbackUI != null)
         {
             feedbackUI.ShowTagFail();
